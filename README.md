@@ -28,18 +28,18 @@ import (
 )
 
 func main() {
-    ctx := context.Background()
-    errReporting := errorreporting.New(ctx, "{ProjectID}", "{ServiceName}")
-    
+	ctx := context.Background()
+	errReporting := errorreporting.New(ctx, "{ProjectID}", "{ServiceName}")
+
 	data, err := ioutil.ReadFile("{yourFile}")
 	if err != nil {
-        errReporting.SendError(err)
-    }
+		errReporting.SendError(err)
+	}
 
 	gcs := storage.New(ctx, "{BucketName}")
 	if err := gcs.Put(ctx, "{Prefix}", "{ContentType}", data); err != nil {
-        errReporting.SendError(err)            
-    }
+		errReporting.SendError(err)
+	}
 	
 }
 ```
