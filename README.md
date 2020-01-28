@@ -21,28 +21,25 @@ package main
 
 import (
 	"context"
+    "io/ioutil"
+
 	"github.com/sdn0303/gcputil/storage"
 	"github.com/sdn0303/gcputil/errorreporting"
-
 )
-
-var (
-	errReporting *errorreporting.ErrorReporting
-	gcs          *storage.Storage
-)
-
-func init() {
-	ctx := context.Background()
-	errReporting = errorreporting.New(ctx, "{ProjectID}", "{ServiceName}")
-	gcs = storage.New("{BucketName}", ctx)
-}
 
 func main() {
-	
+    ctx := context.Background()
+    errReporting := errorreporting.New(ctx, "{ProjectID}", "{ServiceName}")
+    
 	data, err := ioutil.ReadFile("{yourFile}")
-	errReporting.SendError(err)
+	if err != nil {
+        errReporting.SendError(err)
+    }
+
+	gcs := storage.New(ctx, "{BucketName}")
+	if err := gcs.Put(ctx, "{Prefix}", "{ContentType}", data); err != nil {
+        errReporting.SendError(err)            
+    }
 	
-	err := gcs.Put("{Prefix}", "{ContentType}", data)
-	errReporting.SendError(err)
 }
 ```
