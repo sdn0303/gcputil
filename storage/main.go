@@ -1,19 +1,19 @@
 package storage
 
 import (
-	"cloud.google.com/go/storage"
 	"context"
 	"io/ioutil"
 	"log"
+
+	"cloud.google.com/go/storage"
 )
 
 type Storage struct {
 	BucketName string
 	Client     *storage.Client
-	Context    context.Context
 }
 
-func New(bucketName string, ctx context.Context) *Storage {
+func New(ctx context.Context, bucketName string) *Storage {
 	c, err := storage.NewClient(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -21,13 +21,12 @@ func New(bucketName string, ctx context.Context) *Storage {
 	return &Storage{
 		BucketName: bucketName,
 		Client:     c,
-		Context:    ctx,
 	}
 }
 
-func (gcs *Storage) Put(path, contentType string, data []byte) error {
+func (gcs *Storage) Put(ctx context.Context, path, contentType string, data []byte) error {
 
-	w := gcs.Client.Bucket(gcs.BucketName).Object(path).NewWriter(gcs.Context)
+	w := gcs.Client.Bucket(gcs.BucketName).Object(path).NewWriter(ctx)
 	w.ContentType = contentType
 
 	if n, err := w.Write(data); err != nil {
@@ -42,9 +41,9 @@ func (gcs *Storage) Put(path, contentType string, data []byte) error {
 	return nil
 }
 
-func (gcs *Storage) Read(path string) ([]byte, error) {
+func (gcs *Storage) Read(ctx context.Context, path string) ([]byte, error) {
 
-	r, err := gcs.Client.Bucket(gcs.BucketName).Object(path).NewReader(gcs.Context)
+	r, err := gcs.Client.Bucket(gcs.BucketName).Object(path).NewReader(ctx)
 	if err != nil {
 		return nil, err
 	}

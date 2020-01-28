@@ -1,9 +1,10 @@
 package errorreporting
 
 import (
-	"cloud.google.com/go/errorreporting"
 	"context"
 	"log"
+
+	"cloud.google.com/go/errorreporting"
 )
 
 type ErrorReporting struct {
