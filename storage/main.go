@@ -24,7 +24,7 @@ func New(ctx context.Context, bucketName string) *Storage {
 	}
 }
 
-func (gcs *Storage) Put(ctx context.Context, path, contentType string, data []byte) error {
+func (gcs *Storage) Create(ctx context.Context, path, contentType string, data []byte) error {
 
 	w := gcs.Client.Bucket(gcs.BucketName).Object(path).NewWriter(ctx)
 	w.ContentType = contentType
@@ -54,4 +54,12 @@ func (gcs *Storage) Read(ctx context.Context, path string) ([]byte, error) {
 		return nil, err
 	}
 	return data, nil
+}
+
+func (gcs *Storage) Update() {
+
+}
+
+func (gcs *Storage) Delete() {
+
 }
